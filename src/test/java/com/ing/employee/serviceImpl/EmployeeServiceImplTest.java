@@ -49,7 +49,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test(expected = EmployeeNotFoundException.class)
-	public void addEmployee_2Test() {
+	public void addEmployee_2Test() throws Exception {
 		Mockito.when(iEmployeeRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(employee));
 		employeeServiceImpl.addEmploee(employeeDto);
 
@@ -66,7 +66,9 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test(expected = EmployeeNotFoundException.class)
-	public void updateEmployee_2Test() {
+	public void updateEmployee_2Test() throws Exception {
+//		Mockito.when(iEmployeeRepository.findById(Mockito.anyLong())).thenThrow(EmployeeNotFoundException.class);
+//		Mockito.when(iEmployeeRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(employee));
 		employeeServiceImpl.updateEmployee(3L, updateEmployeeDto);
 
 	}
@@ -80,6 +82,7 @@ public class EmployeeServiceImplTest {
 
 	@Test(expected = EmployeeNotFoundException.class)
 	public void getEmployeeById_2Test() {
+		// Mockito.when(iEmployeeRepository.findById(3L)).thenThrow(EmployeeNotFoundException.class);
 		employeeServiceImpl.getEmployeeById(3L);
 	}
 
@@ -106,6 +109,7 @@ public class EmployeeServiceImplTest {
 
 	@Test(expected = EmployeeNotFoundException.class)
 	public void deleteById_2Test() {
+		// Mockito.when(iEmployeeRepository.findById(3L)).thenThrow(EmployeeNotFoundException.class);
 		employeeServiceImpl.deleteEmployee(3L);
 	}
 
