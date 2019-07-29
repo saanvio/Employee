@@ -51,7 +51,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		BeanUtils.copyProperties(employeeDto, employee.get());
 		iEmployeeRepository.save(employee.get());
 
-		return new ApplicationResponse(HttpStatus.OK.value(), EmployeeConstants.UPDATED_MESSAGE);
+		return new ApplicationResponse(HttpStatus.CREATED.value(), EmployeeConstants.UPDATED_MESSAGE);
 	}
 
 	@Override

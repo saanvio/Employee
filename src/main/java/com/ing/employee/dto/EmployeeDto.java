@@ -3,10 +3,11 @@ package com.ing.employee.dto;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-@Data
+import lombok.Setter;
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeDto implements Serializable{

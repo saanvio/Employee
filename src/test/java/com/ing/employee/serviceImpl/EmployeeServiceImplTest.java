@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.BeanUtils;
 
 import com.ing.employee.dto.ApplicationResponse;
 import com.ing.employee.dto.EmployeeDto;
@@ -30,10 +29,19 @@ public class EmployeeServiceImplTest {
 	@Mock
 	IEmployeeRepository iEmployeeRepository;
 
+	Employee employee;
+	EmployeeDto employeeDto;
+	UpdateEmployeeDto updateEmployeeDto;
+
+	@org.junit.Before
+	public void setUp() {
+		employee = getEmployee();
+		employeeDto = getEmployeeDto();
+		updateEmployeeDto = getUpdateEmployeeDto();
+	}
+
 	@Test
 	public void addEmployee_1Test() {
-		Employee employee = getEmployee();
-		EmployeeDto employeeDto = getEmployeeDto();
 		// Mockito.when(iEmployeeRepository.save(Mockito.any())).thenReturn(employee);
 		ApplicationResponse actual = employeeServiceImpl.addEmploee(employeeDto);
 		Assert.assertEquals(EmployeeConstants.CREATED_MESSAGE, actual.getMessage());
@@ -42,34 +50,41 @@ public class EmployeeServiceImplTest {
 
 	@Test(expected = EmployeeNotFoundException.class)
 	public void addEmployee_2Test() {
-		Employee employee = getEmployee();
-		EmployeeDto employeeDto = getEmployeeDto();
 		Mockito.when(iEmployeeRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(employee));
-		ApplicationResponse actual = employeeServiceImpl.addEmploee(employeeDto);
-		Assert.assertEquals(EmployeeConstants.CREATED_MESSAGE, actual.getMessage());
+		employeeServiceImpl.addEmploee(employeeDto);
+
+	}
+
+	@Test
+	public void updateEmployee_1Test() {
+
+		Mockito.when(iEmployeeRepository.findById(employee.getEmployeeId())).thenReturn(Optional.of(employee));
+		Mockito.when(iEmployeeRepository.save(employee)).thenReturn(employee);
+		ApplicationResponse actual = employeeServiceImpl.updateEmployee(employee.getEmployeeId(), updateEmployeeDto);
+		Assert.assertEquals(EmployeeConstants.UPDATED_MESSAGE, actual.getMessage());
+
+	}
+
+	@Test(expected = EmployeeNotFoundException.class)
+	public void updateEmployee_2Test() {
+		employeeServiceImpl.updateEmployee(3L, updateEmployeeDto);
 
 	}
 
 	@Test
 	public void getEmployeeById_1Test() {
-		Employee employee = getEmployee();
 		Mockito.when(iEmployeeRepository.findById(employee.getEmployeeId())).thenReturn(Optional.of(employee));
-		EmployeeDto empActual = employeeServiceImpl.getEmployeeById(1L);
+		EmployeeDto empActual = employeeServiceImpl.getEmployeeById(employee.getEmployeeId());
 		Assert.assertEquals("priya", empActual.getEmployeeName());
 	}
 
 	@Test(expected = EmployeeNotFoundException.class)
 	public void getEmployeeById_2Test() {
-		// Employee employee=getEmployee();
-		// Mockito.when(iEmployeeRepository.findById(3L)).thenReturn(Optional.of(employee));
-		EmployeeDto empActual = employeeServiceImpl.getEmployeeById(5L);
-		Assert.assertEquals("priya", empActual.getEmployeeName());
+		employeeServiceImpl.getEmployeeById(3L);
 	}
 
 	@Test
 	public void getEmployeesTest() {
-		Employee employee = getEmployee();
-		EmployeeDto employeeDto = getEmployeeDto();
 
 		List<EmployeeDto> employeeDtosList = new ArrayList<>();
 		employeeDtosList.add(employeeDto);
@@ -83,41 +98,16 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void deleteById_Test() {
-		Employee employee = getEmployee();
+	public void deleteById_1Test() {
 		Mockito.when(iEmployeeRepository.findById(employee.getEmployeeId())).thenReturn(Optional.of(employee));
 		ApplicationResponse actual = employeeServiceImpl.deleteEmployee(1L);
 		Assert.assertEquals(EmployeeConstants.DELETED_MESSAGE, actual.getMessage());
 	}
 
-//	@Test(expected = EmployeeNotFoundException.class)
-//	public void deleteById_2Test() {
-//		Employee employee = getEmployee();
-//		Mockito.when(iEmployeeRepository.findById(3L)).thenReturn(Optional.of(employee));
-//		ApplicationResponse actual = employeeServiceImpl.deleteEmployee(3L);
-//		Assert.assertEquals(EmployeeConstants.DELETED_MESSAGE, actual.getMessage());
-//	}
-
-//	@Test
-//	public void updateEmployee_1Test()
-//	{
-//		Employee employee=getEmployee();
-//		UpdateEmployeeDto updateEmployeeDto=getUpdateEmployeeDto();
-//	//	BeanUtils.copyProperties(updateEmployeeDto, employee);
-//		Mockito.when(iEmployeeRepository.save(employee)).thenReturn(employee);
-//		ApplicationResponse actual=employeeServiceImpl.updateEmployee(employee.getEmployeeId(), updateEmployeeDto);
-//		Assert.assertEquals(EmployeeConstants.UPDATED_MESSAGE, actual.getMessage());
-//	}
-
-//	@Test(expected = EmployeeNotFoundException.class)
-//	public void updateEmployee_2Test()
-//	{
-//		Employee employee=getEmployee();
-//		UpdateEmployeeDto employeeDto=getUpdateEmployeeDto();
-//		Mockito.when(iEmployeeRepository.findById(2L)).thenReturn(Optional.of(employee));
-//		ApplicationResponse actual=employeeServiceImpl.updateEmployee(employee.getEmployeeId(), employeeDto);
-//		Assert.assertEquals(EmployeeConstants.UPDATED_MESSAGE, actual.getMessage());
-//	}
+	@Test(expected = EmployeeNotFoundException.class)
+	public void deleteById_2Test() {
+		employeeServiceImpl.deleteEmployee(3L);
+	}
 
 	public Employee getEmployee() {
 		return new Employee(1L, "priya", "Hyd", 2342342342L, "h@gmail.com");
