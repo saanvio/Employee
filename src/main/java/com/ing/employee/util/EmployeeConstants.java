@@ -12,5 +12,8 @@ public class EmployeeConstants {
 	public static final String ERROR_EMPLOYEE_NOT_FOUND_MESSAGE="Employee not found";
 	public static final String ERROR_EMPLOYEE_ALREADY_EXIST="Employee already exist.Please create another user";
 	
+	public static final String ERROR_PHONE_NUMBER_MESSAGE="Invalid phone number";
+	public static final String ERROR_EMAIL_MESSAGE="Invalid eamil";
+	
 
 }

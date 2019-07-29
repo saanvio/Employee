@@ -3,6 +3,8 @@ package com.ing.employee.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import com.ing.employee.dto.ApplicationResponse;
 import com.ing.employee.dto.EmployeeDto;
 import com.ing.employee.dto.UpdateEmployeeDto;
 import com.ing.employee.entity.Employee;
+import com.ing.employee.exception.CommonException;
 import com.ing.employee.exception.EmployeeNotFoundException;
 import com.ing.employee.repository.IEmployeeRepository;
 import com.ing.employee.util.EmployeeConstants;
@@ -30,9 +33,15 @@ public class EmployeeServiceImpl implements IEmployeeService {
 	public ApplicationResponse addEmploee(EmployeeDto employeeDto) {
 		LOGGER.info("Add employee service");
 
+		if (!emailvalidation(employeeDto.getEmail()))
+			throw new CommonException(EmployeeConstants.ERROR_EMAIL_MESSAGE);
+		if (!phoneNumberValidatoin(employeeDto.getPhoneNumber()))
+			throw new CommonException(EmployeeConstants.ERROR_PHONE_NUMBER_MESSAGE);
+
 		Optional<Employee> employeeExist = iEmployeeRepository.findByEmail(employeeDto.getEmail());
 		if (employeeExist.isPresent())
 			throw new EmployeeNotFoundException(EmployeeConstants.ERROR_EMPLOYEE_ALREADY_EXIST);
+
 		Employee employee = new Employee();
 		BeanUtils.copyProperties(employeeDto, employee);
 		iEmployeeRepository.save(employee);
@@ -91,6 +100,23 @@ public class EmployeeServiceImpl implements IEmployeeService {
 			throw new EmployeeNotFoundException(EmployeeConstants.ERROR_EMPLOYEE_NOT_FOUND_MESSAGE);
 		iEmployeeRepository.deleteById(employeeId);
 		return new ApplicationResponse(HttpStatus.OK.value(), EmployeeConstants.DELETED_MESSAGE);
+	}
+
+	private boolean phoneNumberValidatoin(Long number) {
+
+		String num = number.toString();
+		Pattern p = Pattern.compile("^[0-9]{10}$");
+		Matcher m = p.matcher(num);
+		return (m.find() && m.group().equals(num));
+	}
+
+	private boolean emailvalidation(String email) {
+		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z"
+				+ "A-Z]{2,7}$";
+		Pattern pat = Pattern.compile(emailRegex);
+		if (email == null)
+			return false;
+		return pat.matcher(email).matches();
 	}
 
 }
