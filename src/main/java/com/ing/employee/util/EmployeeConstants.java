@@ -4,7 +4,7 @@ public class EmployeeConstants {
 	
 	//Success messages
 	public static final String CREATED_MESSAGE="Employee created succesfully";
-	
+	public static final String FETCHED_MESSAGE="Fetched succesfully";
 	public static final String UPDATED_MESSAGE="Employee updated succesfully";
 	public static final String DELETED_MESSAGE="Employee deleted succesfully";
 	

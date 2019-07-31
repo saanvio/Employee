@@ -1,7 +1,5 @@
 package com.ing.employee.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +44,14 @@ public class EmployeeController {
 
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
+	public ResponseEntity<ApplicationResponse> getEmployeeById(@PathVariable Long id) {
 		LOGGER.info("get employee by id controller");
 		return new ResponseEntity<>(iEmployeeService.getEmployeeById(id), HttpStatus.OK);
 
 	}
 	
 	@GetMapping()
-	public ResponseEntity<List<EmployeeDto>> getEmployess() {
+	public ResponseEntity<ApplicationResponse> getEmployess() {
 		LOGGER.info("get employees controller");
 		return new ResponseEntity<>(iEmployeeService.getEmployees(), HttpStatus.OK);
 

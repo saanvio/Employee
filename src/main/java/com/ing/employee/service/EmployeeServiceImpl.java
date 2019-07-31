@@ -46,7 +46,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		BeanUtils.copyProperties(employeeDto, employee);
 		iEmployeeRepository.save(employee);
 
-		return new ApplicationResponse(HttpStatus.CREATED.value(), EmployeeConstants.CREATED_MESSAGE);
+		return new ApplicationResponse(HttpStatus.CREATED.value(), EmployeeConstants.CREATED_MESSAGE,null,null);
 	}
 
 	@Override
@@ -60,11 +60,11 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		BeanUtils.copyProperties(employeeDto, employee.get());
 		iEmployeeRepository.save(employee.get());
 
-		return new ApplicationResponse(HttpStatus.CREATED.value(), EmployeeConstants.UPDATED_MESSAGE);
+		return new ApplicationResponse(HttpStatus.CREATED.value(), EmployeeConstants.UPDATED_MESSAGE,null,null);
 	}
 
 	@Override
-	public EmployeeDto getEmployeeById(Long employeeId) {
+	public ApplicationResponse getEmployeeById(Long employeeId) {
 
 		LOGGER.info("get employeeby id service");
 		Optional<Employee> employee = iEmployeeRepository.findById(employeeId);
@@ -72,11 +72,11 @@ public class EmployeeServiceImpl implements IEmployeeService {
 			throw new EmployeeNotFoundException(EmployeeConstants.ERROR_EMPLOYEE_NOT_FOUND_MESSAGE);
 		EmployeeDto employeeDto = new EmployeeDto();
 		BeanUtils.copyProperties(employee.get(), employeeDto);
-		return employeeDto;
+		return new ApplicationResponse(HttpStatus.OK.value(), EmployeeConstants.UPDATED_MESSAGE,employeeDto,null);
 	}
 
 	@Override
-	public List<EmployeeDto> getEmployees() {
+	public ApplicationResponse getEmployees() {
 
 		LOGGER.info("Employeess list");
 		List<EmployeeDto> employeeDtosList = new ArrayList<>();
@@ -89,7 +89,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 			});
 		}
 
-		return employeeDtosList;
+		return new ApplicationResponse(HttpStatus.OK.value(), EmployeeConstants.FETCHED_MESSAGE,null,employeeDtosList);
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		if (!employee.isPresent())
 			throw new EmployeeNotFoundException(EmployeeConstants.ERROR_EMPLOYEE_NOT_FOUND_MESSAGE);
 		iEmployeeRepository.deleteById(employeeId);
-		return new ApplicationResponse(HttpStatus.OK.value(), EmployeeConstants.DELETED_MESSAGE);
+		return new ApplicationResponse(HttpStatus.OK.value(), EmployeeConstants.DELETED_MESSAGE,null,null);
 	}
 
 	private boolean phoneNumberValidatoin(Long number) {
